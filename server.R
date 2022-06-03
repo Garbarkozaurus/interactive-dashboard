@@ -20,27 +20,28 @@ theme_update(
 )
 
 combined_plot = function(x_name, y_name) {
-  p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = Potability)) +
+  p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = factor(Potability))) +
       geom_point() +
       labs(title = paste(x_name, "against", y_name, sep=" "), xlab = x_name, ylab = y_name)
   return(p)
 }
 
-column_histogram = function(col_data, length_var, name) {
+column_histogram = function(col_name, length_var) {
+    col_data = get(col_name, water)
     bins = seq(min(col_data), max(col_data), length.out = length_var + 1)
-    p = ggplot(data.frame(col_data), aes(x=col_data)) + 
+    p = ggplot(data.frame(col_data), aes(x=col_data)) +
         geom_histogram(breaks=bins, color="darkblue", fill="lightblue") +
         theme(
             axis.text.x = element_blank(),
-            axis.text.y = element_blank(), 
-            axis.ticks.x = element_blank(), 
+            axis.text.y = element_blank(),
+            axis.ticks.x = element_blank(),
             axis.ticks.y = element_blank()) +
-        labs(title=name, x="", y="")
+        labs(title=col_name, x="", y="")
     return(p)
     #return(hist(col_data, breaks = bins, main = name, xlab="", ylab="", axes=F, col="lightblue", border="darkblue"))
 }
 
-pretty_table = function(table_df, round_columns_func=is.numeric, significant_digits=4) 
+pretty_table = function(table_df, round_columns_func=is.numeric, significant_digits=4)
 {
     DT::datatable(table_df, style="bootstrap", filter = "top", rownames = FALSE,
                   options = list(dom = 'Bfrtip', scrollX=T)) %>%
@@ -51,55 +52,23 @@ water = na.omit(read.csv("./data/water_potability.csv", sep=','))
 
 
 shinyServer(function(input, output) {
-
-    output$ph_hist = renderPlot({
-        column_histogram(water$ph, input$bins, "pH")
-    })
-
-    output$hardness_hist = renderPlot({
-        column_histogram(water$Hardness, input$bins, "Hardness")
-    })
-    
-    output$solids_hist = renderPlot({
-        column_histogram(water$Solids, input$bins, "Solids")
-        
-    })
-    
-    output$chloramines_hist = renderPlot({
-        column_histogram(water$Chloramines, input$bins, "Chloramines")
-        
-    })
-    output$sulfate_hist = renderPlot({
-        column_histogram(water$Sulfate, input$bins, "Sulfate")
-        
-    })
-    output$conductivity_hist = renderPlot({
-        column_histogram(water$Conductivity, input$bins, "Conductivity")
-    })
-    output$organic_carbon_hist = renderPlot({
-        column_histogram(water$Organic_carbon, input$bins, "Organic carbon")
-    })
-    output$trihalomethanes_hist = renderPlot({
-        column_histogram(water$Trihalomethanes, input$bins, "Trihalomethanes")
-    })
-    output$turbidity_hist = renderPlot({
-        column_histogram(water$Turbidity, input$bins, "Turbidity")
-        
+    output$attribute_histogram = renderPlot({
+        column_histogram(input$histogram_attr, input$bins)
     })
     
     output$gauge = renderGauge({
-        gauge(round(mean(water$Potability), 2), 
-              min = 0, 
-              max = 1, 
-              sectors = gaugeSectors(success = c(0.5, 1), 
+        gauge(round(mean(water$Potability), 2),
+              min = 0,
+              max = 1,
+              sectors = gaugeSectors(success = c(0.5, 1),
                                      warning = c(0.3, 0.5),
                                      danger = c(0, 0.3)))
     })
-    
+
     output$everything_table = DT::renderDataTable(pretty_table(water))
-    
+
     output$combined_plot = renderPlot({
       combined_plot(input$choice2D_1, input$choice2D_2)
     })
-    
+
 })
