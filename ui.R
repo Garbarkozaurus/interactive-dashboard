@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(ggplot2)
+library(flexdashboard)
 
 
 dashboardPage(
@@ -22,7 +23,9 @@ dashboardPage(
                 tabName = "home_tab",
                 h1("Explain what each attribute means"),
                 p("Add some generic info about the dataset"),
-                p("And maybe a very basic visualisation?")
+                p("And maybe a very basic visualisation?"),
+                p("Fraction of potable sources in the sample"),
+                gaugeOutput("gauge")
             ),
             tabItem(tabName = "dashboard_tab",
             fluidRow(
@@ -60,7 +63,7 @@ dashboardPage(
                 column(width=3, 
                        h1("#TODO")),
                 column(width=6, 
-                       h1("#TODO")),
+                      DT::dataTableOutput("everything_table")),
                 column(width=3, 
                        h1("#TODO"))
             )

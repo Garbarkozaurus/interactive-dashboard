@@ -2,6 +2,8 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(ggthemes)
+library(flexdashboard)
+library(DT)
 
 label_size = 12
 axis_title_size = 12
@@ -31,9 +33,16 @@ column_histogram = function(col_data, length_var, name) {
     #return(hist(col_data, breaks = bins, main = name, xlab="", ylab="", axes=F, col="lightblue", border="darkblue"))
 }
 
+pretty_table = function(table_df, round_columns_func=is.numeric, significant_digits=4) 
+{
+    DT::datatable(table_df, style="bootstrap", filter = "top", rownames = FALSE,
+                  options = list(dom = 'Bfrtip', scrollX=T)) %>%
+        formatSignif(unlist(lapply(table_df, round_columns_func)), significant_digits, mark='')
+}
 
 water = na.omit(read.csv("./data/water_potability.csv", sep=','))
-# Define server logic required to draw a histogram
+
+
 shinyServer(function(input, output) {
 
     output$ph_hist = renderPlot({
@@ -70,4 +79,16 @@ shinyServer(function(input, output) {
         column_histogram(water$Turbidity, input$bins, "Turbidity")
         
     })
+    
+    output$gauge = renderGauge({
+        gauge(round(mean(water$Potability), 2), 
+              min = 0, 
+              max = 1, 
+              sectors = gaugeSectors(success = c(0.5, 1), 
+                                     warning = c(0.3, 0.5),
+                                     danger = c(0, 0.3)))
+    })
+    
+    output$everything_table = DT::renderDataTable(pretty_table(water))
+    
 })
