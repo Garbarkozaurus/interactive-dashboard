@@ -13,7 +13,8 @@ dashboardPage(
         tags$a(tags$img(src="PP_logotyp_ANG_RGB.png", height="100%", width="100%")),
         sidebarMenu(
             menuItem("Home", tabName = "home_tab", icon=icon("home")),
-            menuItem("Dashboard", tabName = "dashboard_tab")
+            menuItem("Dashboard", tabName = "dashboard_tab"),
+            menuItem("Combined 2D TEST", tabName = "combined2D_tab")
         )
      ),
     
@@ -67,6 +68,33 @@ dashboardPage(
                 column(width=3, 
                        h1("#TODO"))
             )
+            #tabItem end
+            ),
+            tabItem(tabName = "combined2D_tab",
+                    h1("Use the list to choose two attributes to compare!"),
+                    column(width = 4,
+                     selectInput("choice2D_1", "Choose x:",
+                                 c("pH" = "ph",
+                                   "Hardness" = "Hardness",
+                                   "Solids" = "Solids",
+                                   "Chloramines" = "Chloramines",
+                                   "Sulfate" = "Sulfate",
+                                   "Conductivity" = "Conductivity",
+                                   "Organic carbon" = "Organic_carbon",
+                                   "Trihalomethanes" = "Trihalomethanes",
+                                   "Turbidity" = "Turbidity")),
+                      selectInput("choice2D_2", "Choose y:",
+                                  c("pH" = "ph",
+                                    "Hardness" = "Hardness",
+                                    "Solids" = "Solids",
+                                    "Chloramines" = "Chloramines",
+                                    "Sulfate" = "Sulfate",
+                                    "Conductivity" = "Conductivity",
+                                    "Organic carbon" = "Organic_carbon",
+                                    "Trihalomethanes" = "Trihalomethanes",
+                                    "Turbidity" = "Turbidity"))),
+                    column(width = 10,
+                      plotOutput("combined_plot"))
             #tabItem end
             )
         )

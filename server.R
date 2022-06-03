@@ -19,6 +19,13 @@ theme_update(
     plot.title = element_text(face="bold", size=title_size, hjust=0)
 )
 
+combined_plot = function(x_name, y_name) {
+  p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = Potability)) +
+      geom_point() +
+      labs(title = paste(x_name, "against", y_name, sep=" "), xlab = x_name, ylab = y_name)
+  return(p)
+}
+
 column_histogram = function(col_data, length_var, name) {
     bins = seq(min(col_data), max(col_data), length.out = length_var + 1)
     p = ggplot(data.frame(col_data), aes(x=col_data)) + 
@@ -90,5 +97,9 @@ shinyServer(function(input, output) {
     })
     
     output$everything_table = DT::renderDataTable(pretty_table(water))
+    
+    output$combined_plot = renderPlot({
+      combined_plot(input$choice2D_1, input$choice2D_2)
+    })
     
 })
