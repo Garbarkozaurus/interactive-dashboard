@@ -11,8 +11,8 @@ dashboardPage(
         tags$a(tags$img(src="PP_logotyp_ANG_RGB.png", height="100%", width="100%")),
         sidebarMenu(
             menuItem("Home", tabName = "home_tab", icon=icon("home")),
-            menuItem("Dashboard", tabName = "dashboard_tab")
-            #menuItem("Combined 2D TEST", tabName = "combined2D_tab")
+            menuItem("Dashboard", tabName = "dashboard_tab"),
+            menuItem("Violin plots", tabName = "violin_tab")
         )
      ),
 
@@ -22,9 +22,8 @@ dashboardPage(
                 tabName = "home_tab",
                 h1("Explain what each attribute means"),
                 p("Add some generic info about the dataset"),
-                p("And maybe a very basic visualisation?"),
-                p("Fraction of potable sources in the sample"),
-                gaugeOutput("gauge")
+                p("And maybe a very basic visualisation?")
+                #gaugeOutput("gauge")
             ),
             tabItem(tabName = "dashboard_tab",
             fluidRow(
@@ -91,6 +90,23 @@ dashboardPage(
                        h1("#TODO"))
             )
             #tabItem end
+            ),
+            tabItem(tabName = "violin_tab",
+                    h1("Use the list to choose an attribute to see the violin plots for!"),
+                    column(width = 4,
+                           selectInput("violin_choice", "Choose attribute:",
+                                       c("pH" = "ph",
+                                         "Hardness" = "Hardness",
+                                         "Solids" = "Solids",
+                                         "Chloramines" = "Chloramines",
+                                         "Sulfate" = "Sulfate",
+                                         "Conductivity" = "Conductivity",
+                                         "Organic carbon" = "Organic_carbon",
+                                         "Trihalomethanes" = "Trihalomethanes",
+                                         "Turbidity" = "Turbidity"))),
+                    column(width = 10,
+                           plotOutput("violin_plot"))
+                    #tabItem end
             )
         )
     )

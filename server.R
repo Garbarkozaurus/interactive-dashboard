@@ -22,7 +22,16 @@ theme_update(
 combined_plot = function(x_name, y_name) {
   p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = factor(Potability))) +
       geom_point() +
-      labs(title = paste(x_name, "against", y_name, sep=" "), xlab = x_name, ylab = y_name)
+      labs(title = paste(x_name, "against", y_name, sep=" ")) +
+      xlab(x_name) + ylab(y_name)
+  return(p)
+}
+
+violin = function(data) {
+  p = ggplot(water, aes(x = get(data), y = Potability, fill = Potability)) +
+      geom_violin() +
+      labs(title = paste("Distribution of", data, "with respect to potability", sep=" "), ylab = "Potability") +
+      xlab(data) + coord_flip()
   return(p)
 }
 
@@ -49,13 +58,14 @@ pretty_table = function(table_df, round_columns_func=is.numeric, significant_dig
 }
 
 water = na.omit(read.csv("./data/water_potability.csv", sep=','))
+water$Potability = as.factor(water$Potability)
 
 
 shinyServer(function(input, output) {
     output$attribute_histogram = renderPlot({
         column_histogram(input$histogram_attr, input$bins)
     })
-    
+
     output$gauge = renderGauge({
         gauge(round(mean(water$Potability), 2),
               min = 0,
@@ -69,6 +79,10 @@ shinyServer(function(input, output) {
 
     output$combined_plot = renderPlot({
       combined_plot(input$choice2D_1, input$choice2D_2)
+    })
+
+    output$violin_plot = renderPlot({
+      violin(input$violin_choice)
     })
 
 })
