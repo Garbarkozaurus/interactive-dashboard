@@ -14,7 +14,8 @@ dashboardPage(
         sidebarMenu(
             menuItem("Home", tabName = "home_tab", icon=icon("home")),
             menuItem("Dashboard", tabName = "dashboard_tab"),
-            menuItem("Combined 2D TEST", tabName = "combined2D_tab")
+            menuItem("Combined 2D", tabName = "combined2D_tab"),
+            menuItem("Violin plots", tabName = "violin_tab")
         )
      ),
     
@@ -96,6 +97,23 @@ dashboardPage(
                     column(width = 10,
                       plotOutput("combined_plot"))
             #tabItem end
+            ),
+            tabItem(tabName = "violin_tab",
+                    h1("Use the list to choose an attribute to see the violin plots for!"),
+                    column(width = 4,
+                           selectInput("violin_choice", "Choose attribute:",
+                                       c("pH" = "ph",
+                                         "Hardness" = "Hardness",
+                                         "Solids" = "Solids",
+                                         "Chloramines" = "Chloramines",
+                                         "Sulfate" = "Sulfate",
+                                         "Conductivity" = "Conductivity",
+                                         "Organic carbon" = "Organic_carbon",
+                                         "Trihalomethanes" = "Trihalomethanes",
+                                         "Turbidity" = "Turbidity"))),
+                    column(width = 10,
+                           plotOutput("violin_plot"))
+                    #tabItem end
             )
         )
     )
