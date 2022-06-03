@@ -21,8 +21,8 @@ dashboardPage(
                 tabName = "home_tab",
                 h1("Explain what each attribute means"),
                 p("Add some generic info about the dataset"),
-                p("And maybe a very basic visualisation?")
-                #gaugeOutput("gauge")
+                p("And maybe a very basic visualisation?"),
+                gaugeOutput("gauge")
             ),
             tabItem(tabName = "dashboard_tab",
             fluidRow(

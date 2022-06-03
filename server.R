@@ -30,8 +30,12 @@ combined_plot = function(x_name, y_name) {
 violin = function(data) {
   p = ggplot(water, aes(x = get(data), y = Potability, fill = Potability)) +
       geom_violin() +
-      labs(title = paste("Distribution of", data, "with respect to potability", sep=" "), ylab = "Potability") +
-      xlab(data) + coord_flip()
+      coord_flip() +
+      theme(
+          axis.text.x = element_blank(),
+          axis.ticks.y = element_blank()) +
+      labs(title = paste("Distribution of", data, "with respect to potability", sep=" "), 
+           x=data, y="")
   return(p)
 }
 
@@ -53,7 +57,7 @@ column_histogram = function(col_name, length_var) {
 pretty_table = function(table_df, round_columns_func=is.numeric, significant_digits=4)
 {
     DT::datatable(table_df, style="bootstrap", filter = "top", rownames = FALSE,
-                  options = list(dom = 'Bfrtip', scrollX=T)) %>%
+                  options = list(dom = 'Bfrtip', scrollX=T, bFilter=F)) %>%
         formatSignif(unlist(lapply(table_df, round_columns_func)), significant_digits, mark='')
 }
 
@@ -67,7 +71,7 @@ shinyServer(function(input, output) {
     })
 
     output$gauge = renderGauge({
-        gauge(round(mean(water$Potability), 2),
+        gauge(round(length(water$Potability[water$Potability==1])/length(water$Potability), 2),
               min = 0,
               max = 1,
               sectors = gaugeSectors(success = c(0.5, 1),
