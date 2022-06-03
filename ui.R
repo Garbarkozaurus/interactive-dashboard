@@ -11,8 +11,7 @@ dashboardPage(
         tags$a(tags$img(src="PP_logotyp_ANG_RGB.png", height="100%", width="100%")),
         sidebarMenu(
             menuItem("Home", tabName = "home_tab", icon=icon("home")),
-            menuItem("Dashboard", tabName = "dashboard_tab"),
-            menuItem("Violin plots", tabName = "violin_tab")
+            menuItem("Dashboard", tabName = "dashboard_tab")
         )
      ),
 
@@ -78,7 +77,21 @@ dashboardPage(
                           plotOutput("combined_plot"))
                        ),
                 column(width=4,
-                       h1("#TODO"))
+                       verticalLayout(fluidRow(
+                           column(width=12, align="center",
+                                  selectInput("violin_choice", "Choose attribute:",
+                                              c("pH" = "ph",
+                                                "Hardness" = "Hardness",
+                                                "Solids" = "Solids",
+                                                "Chloramines" = "Chloramines",
+                                                "Sulfate" = "Sulfate",
+                                                "Conductivity" = "Conductivity",
+                                                "Organic carbon" = "Organic_carbon",
+                                                "Trihalomethanes" = "Trihalomethanes",
+                                                "Turbidity" = "Turbidity"))
+                                  )),
+                           plotOutput("violin_plot")
+                     ))
             ),
 
             fluidRow(
@@ -90,23 +103,6 @@ dashboardPage(
                        h1("#TODO"))
             )
             #tabItem end
-            ),
-            tabItem(tabName = "violin_tab",
-                    h1("Use the list to choose an attribute to see the violin plots for!"),
-                    column(width = 4,
-                           selectInput("violin_choice", "Choose attribute:",
-                                       c("pH" = "ph",
-                                         "Hardness" = "Hardness",
-                                         "Solids" = "Solids",
-                                         "Chloramines" = "Chloramines",
-                                         "Sulfate" = "Sulfate",
-                                         "Conductivity" = "Conductivity",
-                                         "Organic carbon" = "Organic_carbon",
-                                         "Trihalomethanes" = "Trihalomethanes",
-                                         "Turbidity" = "Turbidity"))),
-                    column(width = 10,
-                           plotOutput("violin_plot"))
-                    #tabItem end
             )
         )
     )
