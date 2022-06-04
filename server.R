@@ -21,11 +21,14 @@ theme_update(
 
 combined_plot = function(x_name, y_name, selected) {
     selected_records = water[selected, ]
-    p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = factor(Potability))) +
+    p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = Potability)) +
         geom_point(alpha=0.4) +
         geom_point(data = selected_records, aes(x = get(x_name),
                                                 y = get(y_name)),
-                   size=4) +
+                   color="black", size=5) +
+        geom_point(data = selected_records, aes(x = get(x_name),
+                                                y = get(y_name),
+                                                color=Potability), size=3) +
         labs(title = paste(x_name, "against", y_name, sep=" ")) +
         xlab(x_name) + ylab(y_name)
     return(p)
@@ -33,7 +36,8 @@ combined_plot = function(x_name, y_name, selected) {
 
 bar = function() {
   pot_water = data.frame(Potability = as.factor(c(0, 1)),
-                         count = c(length(water$Potability[water$Potability==0]), length(water$Potability[water$Potability==1])))
+                         count = c(length(water$Potability[water$Potability==0]),
+                                   length(water$Potability[water$Potability==1])))
   p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
       geom_col() +
       theme(
