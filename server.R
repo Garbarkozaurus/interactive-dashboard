@@ -19,8 +19,20 @@ theme_update(
     plot.title = element_text(face="bold", size=title_size, hjust=0)
 )
 
+bar = function() {
+  pot_water = data.frame(Potability = as.factor(c(0, 1)), 
+                         count = c(length(water$Potability[water$Potability==0]), length(water$Potability[water$Potability==1])))
+  p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
+      geom_col() +
+      theme(
+        axis.text.x = element_blank(),
+        axis.ticks.y = element_blank()) +
+      labs(title = "Frequency of potable and non-potable water")
+  return(p)
+}
+
 combined_plot = function(x_name, y_name) {
-  p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = factor(Potability))) +
+  p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = Potability)) +
       geom_point() +
       labs(title = paste(x_name, "against", y_name, sep=" ")) +
       xlab(x_name) + ylab(y_name)
@@ -87,6 +99,10 @@ shinyServer(function(input, output) {
 
     output$violin_plot = renderPlot({
       violin(input$violin_choice)
+    })
+    
+    output$potability_bar = renderPlot({
+      bar()
     })
 
 })
