@@ -110,7 +110,7 @@ dashboardPage(
                 column(width=6,
                       DT::dataTableOutput("everything_table")),
                 column(width=3,
-                       h1("#TODO"))
+                       gaugeOutput("filtered_gauge"))
             )
             #tabItem end
             )

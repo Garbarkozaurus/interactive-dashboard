@@ -77,7 +77,7 @@ column_histogram = function(col_name, length_var) {
 pretty_table = function(table_df, round_columns_func=is.numeric, significant_digits=4)
 {
     DT::datatable(table_df, style="bootstrap", filter = "top", rownames = FALSE,
-                  options = list(dom = 'Bfrtip', scrollX=T, bFilter=F)) %>%
+                  options = list(dom = 'Bfrtip', scrollX=T)) %>%
         formatSignif(unlist(lapply(table_df, round_columns_func)), significant_digits, mark='')
 }
 
@@ -111,5 +111,19 @@ shinyServer(function(input, output) {
     output$potability_bar = renderPlot({
       bar()
     })
+    
+    output$filtered_gauge = renderGauge({
+        selected_rows = water[input$everything_table_rows_all, ]
+        print(length(input$everything_table_rows_all))
+        print(nrow(selected_rows))
+        potable_samples = length(selected_rows$Potability[selected_rows$Potability==1])/nrow(selected_rows)
+        gauge(potable_samples,
+              min = 0,
+              max = 1,
+              sectors = gaugeSectors(success = c(0.5, 1),
+                                     warning = c(0.3, 0.5),
+                                     danger = c(0, 0.3)))
+    })
+    
 
 })
