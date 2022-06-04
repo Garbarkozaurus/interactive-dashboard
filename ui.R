@@ -5,7 +5,7 @@ library(flexdashboard)
 
 
 dashboardPage(
-    dashboardHeader(title="This is the header"),
+    dashboardHeader(title="Water potability"),
     dashboardSidebar(
         # find a good place to put this
         tags$a(tags$img(src="PP_logotyp_ANG_RGB.png", height="100%", width="100%")),
@@ -100,6 +100,7 @@ dashboardPage(
                                         "Trihalomethanes" = "Trihalomethanes",
                                         "Turbidity" = "Turbidity"))
                           )),
+                          h1(""),
                           plotOutput("combined_plot"))
                        ),
                 column(width=4,
@@ -116,6 +117,7 @@ dashboardPage(
                                                 "Trihalomethanes" = "Trihalomethanes",
                                                 "Turbidity" = "Turbidity"))
                                   )),
+                           h1(""),
                            plotOutput("violin_plot")
                      ))
             ),
