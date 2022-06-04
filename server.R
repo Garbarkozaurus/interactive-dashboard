@@ -19,6 +19,21 @@ theme_update(
     plot.title = element_text(face="bold", size=title_size, hjust=0)
 )
 
+column_histogram = function(col_name, length_var) {
+    col_data = get(col_name, water)
+    bins = seq(min(col_data), max(col_data), length.out = length_var + 1)
+    p = ggplot(data.frame(col_data), aes(x=col_data)) +
+        geom_histogram(breaks=bins, color="darkblue", fill="lightblue") +
+        theme(
+            axis.text.x = element_blank(),
+            #axis.text.y = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.ticks.y = element_blank()) +
+        labs(title=col_name, x="", y="")
+    return(p)
+    #return(hist(col_data, breaks = bins, main = name, xlab="", ylab="", axes=F, col="lightblue", border="darkblue"))
+}
+
 combined_plot = function(x_name, y_name, selected) {
     selected_records = water[selected, ]
     p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = Potability)) +
@@ -34,22 +49,9 @@ combined_plot = function(x_name, y_name, selected) {
     return(p)
 }
 
-bar = function() {
-  pot_water = data.frame(Potability = as.factor(c(0, 1)),
-                         count = c(length(water$Potability[water$Potability==0]),
-                                   length(water$Potability[water$Potability==1])))
-  p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
-      geom_col() +
-      theme(
-        axis.text.x = element_blank(),
-        axis.ticks.y = element_blank()) +
-      labs(title = "Frequency of potable and non-potable water")
-  return(p)
-}
-
 violin = function(data) {
   p = ggplot(water, aes(x = get(data), y = Potability, fill = Potability)) +
-      geom_violin() +
+      geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
       coord_flip() +
       theme(
           axis.text.x = element_blank(),
@@ -59,20 +61,6 @@ violin = function(data) {
   return(p)
 }
 
-column_histogram = function(col_name, length_var) {
-    col_data = get(col_name, water)
-    bins = seq(min(col_data), max(col_data), length.out = length_var + 1)
-    p = ggplot(data.frame(col_data), aes(x=col_data)) +
-        geom_histogram(breaks=bins, color="darkblue", fill="lightblue") +
-        theme(
-            axis.text.x = element_blank(),
-            axis.text.y = element_blank(),
-            axis.ticks.x = element_blank(),
-            axis.ticks.y = element_blank()) +
-        labs(title=col_name, x="", y="")
-    return(p)
-    #return(hist(col_data, breaks = bins, main = name, xlab="", ylab="", axes=F, col="lightblue", border="darkblue"))
-}
 
 pretty_table = function(table_df, round_columns_func=is.numeric, significant_digits=4)
 {
@@ -80,6 +68,21 @@ pretty_table = function(table_df, round_columns_func=is.numeric, significant_dig
                   options = list(dom = 'Bfrtip', scrollX=T)) %>%
         formatSignif(unlist(lapply(table_df, round_columns_func)), significant_digits, mark='')
 }
+
+
+bar = function() {
+    pot_water = data.frame(Potability = as.factor(c(0, 1)),
+                           count = c(length(water$Potability[water$Potability==0]),
+                                     length(water$Potability[water$Potability==1])))
+    p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
+        geom_col() +
+        theme(
+            axis.text.x = element_blank(),
+            axis.ticks.y = element_blank()) +
+        labs(title = "Frequency of potable and non-potable water")
+    return(p)
+}
+
 
 water = na.omit(read.csv("./data/water_potability.csv", sep=','))
 water$Potability = as.factor(water$Potability)
@@ -111,19 +114,17 @@ shinyServer(function(input, output) {
     output$potability_bar = renderPlot({
       bar()
     })
-    
+
     output$filtered_gauge = renderGauge({
         selected_rows = water[input$everything_table_rows_all, ]
-        print(length(input$everything_table_rows_all))
-        print(nrow(selected_rows))
-        potable_samples = length(selected_rows$Potability[selected_rows$Potability==1])/nrow(selected_rows)
+        potable_samples = 100*round(length(selected_rows$Potability[selected_rows$Potability==1])/nrow(selected_rows), 3)
         gauge(potable_samples,
               min = 0,
-              max = 1,
-              sectors = gaugeSectors(success = c(0.5, 1),
-                                     warning = c(0.3, 0.5),
-                                     danger = c(0, 0.3)))
+              max = 100,
+              symbol='%',
+              sectors = gaugeSectors(success = c(50, 100),
+                                     warning = c(30, 50),
+                                     danger = c(0, 30)))
     })
-    
 
 })

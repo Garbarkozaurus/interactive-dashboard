@@ -20,7 +20,7 @@ dashboardPage(
             tabItem(
                 tabName = "home_tab",
                 column(width = 5,
-                  h1("Explain what each attribute means"),
+                  h1("Explaining the attributes"),
                   p("1. pH value - how acidic or basic the water is (7 is neutral, torwards 0 is more acidic, torwards 14 is more basic)."),
                   p("2. Hardness - the capacity of water to precipitate soap in mg/L"),
                   p("3. Solids - total dissolved solids in ppm"),
@@ -105,11 +105,12 @@ dashboardPage(
             ),
 
             fluidRow(
-                column(width=3,
+                column(width=2,
                        h1("#TODO")),
-                column(width=6,
+                column(width=8,
                       DT::dataTableOutput("everything_table")),
-                column(width=3,
+                column(width=2,
+                       h3("Potable samples based on table filter"),
                        gaugeOutput("filtered_gauge"))
             )
             #tabItem end
