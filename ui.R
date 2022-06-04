@@ -40,9 +40,10 @@ dashboardPage(
                                HTML("<p>Check out the distribution of attributes using the <b><u>histogram</u></b> - select the attribute you want to examine and adjust the number of bins",
                                "<p>See if there are any dependencies between attributes with the <b><u>scatter plot</u></b>",
                                "<p>Use the <b><u>violin plot</u></b> to see how the values of an atttribute are distributed when the examples are separated by potability",
-                               "<p>Explore the dataset with the <b><u>interactive table</u></b></p>",
-                               "    - select rows to see them highlighted on the scatter plot<br>",
-                               "    - apply filters and see how many records satisfying the conditions are potable on the gauge<br>")
+                               "<p>Explore the dataset with the <b><u>interactive table</u></b>:<br>",
+                               "    - see what proportions of each potability value your filters and selections cover using the bar chart to the left",
+                               "    - select rows to see them highlighted on the scatter plot above<br>",
+                               "    - apply filters and see how many records satisfying the conditions are potable on the gauge to the right<br>")
                         )
                     )
                         
@@ -121,7 +122,10 @@ dashboardPage(
 
             fluidRow(
                 column(width=2,
-                       h1("#TODO")),
+                       tabsetPanel(
+                            tabPanel("Filtered in all", plotOutput("filter_bar")),
+                            tabPanel("Selected in filtered", plotOutput("selection_bar"))
+                       )),
                 column(width=8,
                       DT::dataTableOutput("everything_table")),
                 column(width=2,

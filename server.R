@@ -19,6 +19,19 @@ theme_update(
     plot.title = element_text(face="bold", size=title_size, hjust=0)
 )
 
+bar = function() {
+    pot_water = data.frame(Potability = as.factor(c(0, 1)),
+                           count = c(length(water$Potability[water$Potability==0]),
+                                     length(water$Potability[water$Potability==1])))
+    p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
+        geom_col() +
+        theme(
+            axis.text.x = element_blank(),
+            axis.ticks.y = element_blank()) +
+        labs(title = "Frequency of potable and non-potable water")
+    return(p)
+}
+
 column_histogram = function(col_name, length_var) {
     col_data = get(col_name, water)
     bins = seq(min(col_data), max(col_data), length.out = length_var + 1)
@@ -70,16 +83,11 @@ pretty_table = function(table_df, round_columns_func=is.numeric, significant_dig
 }
 
 
-bar = function() {
-    pot_water = data.frame(Potability = as.factor(c(0, 1)),
-                           count = c(length(water$Potability[water$Potability==0]),
-                                     length(water$Potability[water$Potability==1])))
-    p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
-        geom_col() +
-        theme(
-            axis.text.x = element_blank(),
-            axis.ticks.y = element_blank()) +
-        labs(title = "Frequency of potable and non-potable water")
+filtration_bar = function(main_data, table_data)
+{
+    p = ggplot(main_data, aes(x=Potability, fill=Potability)) +
+        geom_bar(alpha = 0.3) +
+        geom_bar(data = table_data, aes(x=Potability, fill=Potability))
     return(p)
 }
 
@@ -87,7 +95,12 @@ bar = function() {
 water = na.omit(read.csv("./data/water_potability.csv", sep=','))
 water$Potability = as.factor(water$Potability)
 
+
 shinyServer(function(input, output) {
+    output$potability_bar = renderPlot({
+        bar()
+    })
+    
     output$attribute_histogram = renderPlot({
         column_histogram(input$histogram_attr, input$bins)
     })
@@ -111,13 +124,10 @@ shinyServer(function(input, output) {
       violin(input$violin_choice)
     })
 
-    output$potability_bar = renderPlot({
-      bar()
-    })
-
+    
     output$filtered_gauge = renderGauge({
-        selected_rows = water[input$everything_table_rows_all, ]
-        potable_samples = 100*round(length(selected_rows$Potability[selected_rows$Potability==1])/nrow(selected_rows), 3)
+        filtered_rows = water[input$everything_table_rows_all, ]
+        potable_samples = 100*round(length(filtered_rows$Potability[filtered_rows$Potability==1])/nrow(filtered_rows), 3)
         gauge(potable_samples,
               min = 0,
               max = 100,
@@ -126,5 +136,16 @@ shinyServer(function(input, output) {
                                      warning = c(30, 50),
                                      danger = c(0, 30)))
     })
-
+    
+    output$filter_bar = renderPlot({
+        # not sure how to make this happen only once - putting it into a separate reactive block doesn't work
+        filtered_rows = water[input$everything_table_rows_all, ]
+        filtration_bar(water, filtered_rows)
+    })
+    
+    output$selection_bar = renderPlot({
+        filtered_rows = water[input$everything_table_rows_all, ]
+        selected_rows = input$everything_table_rows_selected
+        filtration_bar(filtered_rows, water[selected_rows,])
+    })
 })
