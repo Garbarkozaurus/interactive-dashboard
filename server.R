@@ -19,11 +19,15 @@ theme_update(
     plot.title = element_text(face="bold", size=title_size, hjust=0)
 )
 
-combined_plot = function(x_name, y_name) {
-  p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = factor(Potability))) +
-      geom_point() +
-      labs(title = paste(x_name, "against", y_name, sep=" ")) +
-      xlab(x_name) + ylab(y_name)
+combined_plot = function(x_name, y_name, selected) {
+    selected_records = water[selected, ]
+    p = ggplot(water, aes(x = get(x_name), y = get(y_name), color = factor(Potability))) +
+        geom_point(alpha=0.4) +
+        geom_point(data = selected_records, aes(x = get(x_name),
+                                                y = get(y_name)),
+                   size=4) +
+        labs(title = paste(x_name, "against", y_name, sep=" ")) +
+        xlab(x_name) + ylab(y_name)
   return(p)
 }
 
@@ -64,7 +68,6 @@ pretty_table = function(table_df, round_columns_func=is.numeric, significant_dig
 water = na.omit(read.csv("./data/water_potability.csv", sep=','))
 water$Potability = as.factor(water$Potability)
 
-
 shinyServer(function(input, output) {
     output$attribute_histogram = renderPlot({
         column_histogram(input$histogram_attr, input$bins)
@@ -82,7 +85,7 @@ shinyServer(function(input, output) {
     output$everything_table = DT::renderDataTable(pretty_table(water))
 
     output$combined_plot = renderPlot({
-      combined_plot(input$choice2D_1, input$choice2D_2)
+      combined_plot(input$choice2D_1, input$choice2D_2, input$everything_table_rows_selected)
     })
 
     output$violin_plot = renderPlot({
