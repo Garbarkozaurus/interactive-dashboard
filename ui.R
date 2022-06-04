@@ -19,7 +19,7 @@ dashboardPage(
         tabItems(
             tabItem(
                 tabName = "home_tab",
-                column(width = 5,
+                fluidRow(column(width = 5,
                   h1("Explaining the attributes"),
                   p("1. pH value - how acidic or basic the water is (7 is neutral, torwards 0 is more acidic, torwards 14 is more basic)."),
                   p("2. Hardness - the capacity of water to precipitate soap in mg/L"),
@@ -32,7 +32,22 @@ dashboardPage(
                   p("9. Turbidity - Measure of light emiting property of water in NTU (nephelometric turbidity units)."),
                   p("10. Potability - indicates if water is safe for human consumption (1 means potable, 0 means not potable).")),
                 column(width = 4,
-                  plotOutput("potability_bar"))
+                  plotOutput("potability_bar"))),
+                fluidRow(
+                    column(width=12, align="center", verticalLayout(
+                        h1("Things to try out in the dashboard:"),
+                        column(width=12, align="left",
+                               HTML("<p>Check out the distribution of attributes using the <b><u>histogram</u></b> - select the attribute you want to examine and adjust the number of bins",
+                               "<p>See if there are any dependencies between attributes with the <b><u>scatter plot</u></b>",
+                               "<p>Use the <b><u>violin plot</u></b> to see how the values of an atttribute are distributed when the examples are separated by potability",
+                               "<p>Explore the dataset with the <b><u>interactive table</u></b></p>",
+                               "    - select rows to see them highlighted on the scatter plot<br>",
+                               "    - apply filters and see how many records satisfying the conditions are potable on the gauge<br>")
+                        )
+                    )
+                        
+                    )
+                )
             ),
             tabItem(tabName = "dashboard_tab",
             fluidRow(
