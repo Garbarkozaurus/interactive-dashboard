@@ -19,10 +19,20 @@ dashboardPage(
         tabItems(
             tabItem(
                 tabName = "home_tab",
-                h1("Explain what each attribute means"),
-                p("Add some generic info about the dataset"),
-                p("And maybe a very basic visualisation?"),
-                gaugeOutput("gauge")
+                column(width = 5,
+                  h1("Explain what each attribute means"),
+                  p("1. pH value - how acidic or basic the water is (7 is neutral, torwards 0 is more acidic, torwards 14 is more basic)."),
+                  p("2. Hardness - the capacity of water to precipitate soap in mg/L"),
+                  p("3. Solids - total dissolved solids in ppm"),
+                  p("4. Chloramines - the amount of Chloramines in ppm "),
+                  p("5. Sulfate - the amount of Sulfates dissolved in mg/L"),
+                  p("6. Conductivity - the electrical conductivity of water in μS/cm."),
+                  p("7. Organic_carbon - the amount of organic carbon in ppm."),
+                  p("8. Trihalomethanes - the amount of Trihalomethanes in μg/L"),
+                  p("9. Turbidity - Measure of light emiting property of water in NTU (nephelometric turbidity units)."),
+                  p("10. Potability - indicates if water is safe for human consumption (1 means potable, 0 means not potable).")),
+                column(width = 4,
+                  plotOutput("potability_bar"))
             ),
             tabItem(tabName = "dashboard_tab",
             fluidRow(

@@ -28,6 +28,18 @@ combined_plot = function(x_name, y_name, selected) {
                    size=4) +
         labs(title = paste(x_name, "against", y_name, sep=" ")) +
         xlab(x_name) + ylab(y_name)
+    return(p)
+}
+
+bar = function() {
+  pot_water = data.frame(Potability = as.factor(c(0, 1)),
+                         count = c(length(water$Potability[water$Potability==0]), length(water$Potability[water$Potability==1])))
+  p = ggplot(pot_water, aes(x=Potability, y=count, fill=Potability)) +
+      geom_col() +
+      theme(
+        axis.text.x = element_blank(),
+        axis.ticks.y = element_blank()) +
+      labs(title = "Frequency of potable and non-potable water")
   return(p)
 }
 
@@ -38,7 +50,7 @@ violin = function(data) {
       theme(
           axis.text.x = element_blank(),
           axis.ticks.y = element_blank()) +
-      labs(title = paste("Distribution of", data, "with respect to potability", sep=" "), 
+      labs(title = paste("Distribution of", data, "with respect to potability", sep=" "),
            x=data, y="")
   return(p)
 }
@@ -90,6 +102,10 @@ shinyServer(function(input, output) {
 
     output$violin_plot = renderPlot({
       violin(input$violin_choice)
+    })
+
+    output$potability_bar = renderPlot({
+      bar()
     })
 
 })
