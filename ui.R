@@ -11,7 +11,7 @@ dashboardPage(
         tags$a(tags$img(src="PP_logotyp_ANG_RGB.png", height="100%", width="100%")),
         sidebarMenu(
             menuItem("Home", tabName = "home_tab", icon=icon("home")),
-            menuItem("Dashboard", tabName = "dashboard_tab")
+            menuItem("Dashboard", tabName = "dashboard_tab", icon = icon("tachometer-alt"))
         )
      ),
 
@@ -46,7 +46,7 @@ dashboardPage(
                                "    - apply filters and see how many records satisfying the conditions are potable on the gauge to the right<br>")
                         )
                     )
-                        
+
                     )
                 )
             ),
