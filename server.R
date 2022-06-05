@@ -1,7 +1,6 @@
 library(shiny)
 library(shinydashboard)
 library(ggplot2)
-library(ggthemes)
 library(flexdashboard)
 library(DT)
 
